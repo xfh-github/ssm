@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context-4.2.xsd">
+
+<!--   1 关联数据库配置文件-->
+    <context:property-placeholder location="classpath:database.properties"/>
+
+<!--    2,连接池
+        dbcp:半自动化操作，不能自动链接
+        c3p0:自动化操作
+-->
+    <!--Spring整合MyBatis对象-->
+    <!-- 配置连接池 c3p0的写法，跟POOLED属性名不一样的-->
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <property name="driverClass" value="com.mysql.jdbc.Driver"></property>
+        <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/ssmbuild"></property>
+        <property name="user" value="root"></property>
+        <property name="password" value="root"></property>
+    </bean>
+    <!-- 配置SqlSessionFactory工厂-->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"></property>
+
+    <!--        绑定Mybatis的配置文件-->
+        <property name="configLocation" value="classpath:mybatis-config.xml"/>
+    </bean>
+
+<!--  4配置dao接口扫描包，动态实现dao接口可以注入到 spring容器中！ -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+<!--        注入SqlSessionFactory-->
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+<!--        要扫描的包-->
+        <property name="basePackage" value="com.xing.dao"/>
+    </bean>
+
+
+
+
+
+
+
+
+
+
+
+
+</beans>
